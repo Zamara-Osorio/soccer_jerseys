@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><Small></Small>occer Jerseys</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Camisetas de Futbol</h1>
+</header>
+
+<button class="cart-toggle" onclick="toggleCart()">🛒 Carrito</button>
+
+<div class="container">
+    <div class="products-grid" id="products-grid"></div>
+</div>
+
+<div class="cart" id="cart">
+    <h2>Carrito de Compras</h2>
+    <div id="cart-items"></div>
+    <div class="total" id="total">Total: $0</div>
+</div>
+
+<script>
+    const products = [
+        { id: 1, name: "Camiseta del Barcelona", price: 553.51471, image:"img/Barcelona.jpg" },
+        { id: 2, name: "Camiseta del Real Madrid", price: 599.950 , image: "img/RealMadrid.jpg" },
+        { id: 3, name: "Camiseta del Villareal", price: 307.588, image: "img/Villarreal.jpg" },
+        { id: 4, name: "Camiseta del Masterchef city", price: 457.291, image: "img/masterchef city.webp" },
+        { id: 5, name: "Camiseta del Sevilla", price: 409.155, image: "img/sevilla retro.jpg" },
+        { id: 6, name: "Camiseta del Girona", price: 385.087, image: "img/Girona.jpg" },
+        { id: 7, name: "Camiseta del Real Betis ", price: 420.948, image: "img/real betis.webp" },
+        { id: 8, name: "Camiseta de Getafe", price: 336.951, image: "img/Getafe.jpg" },
+
+        { id: 9, name: "Camiseta de Atlético Nacional", price: 279.960 , image: "img/Nacional.jpeg" },
+        { id: 10, name: "Camiseta de Millonarios", price: 299.950, image: "img/Millonarios.jpg" },
+        { id: 11, name: "Camiseta de Once Caldas", price: 240.950, image: "img/Once caldas.webp" },
+        { id: 12, name: "Camiseta de Santa Fe", price: 249.980, image: "img/Santa fe.jpg" },
+        { id: 13, name: "Camiseta de Boyacá Chicó", price: 200.99, image: "img/boyacá chicó.jpg" },
+        { id: 14, name: "Camiseta del Quindio", price: 900.07, image: "img/Quindio.jpg" },
+
+        { id: 15, name: "Camiseta de Colombia", price: 499.950, image: "img/Colombia.webp" },
+        { id: 16, name: "Camiseta de Argentina", price: 419.950, image: "img/Argentina.webp" },
+        { id: 17, name: "Camiseta de Chile", price: 249.950, image: "img/Chile.jpg" },
+        { id: 18, name: "Camiseta de Canadá", price: 505.426, image: "img/Canadá.jpg" },
+        { id: 19, name: "Camiseta de Dinamarca", price: 132.44, image: "img/Dinamarca.jpg" },
+        { id: 20, name: "Camiseta de Brasil", price: 524.950, image: "img/Brasil.jpg" },
+        
+    ];
+
+    let cart = [];
+
+    function renderProducts() {
+        const productsGrid = document.getElementById('products-grid');
+        productsGrid.innerHTML = products.map(product => `
+            <div class="product-card">
+                <img src="${product.image}" alt="${product.name}">
+                <h3>${product.name}</h3>
+                <p>$${product.price}</p>
+                <button onclick="addToCart(${product.id})">Agregar al carrito</button>
+            </div>
+        `).join('');
+    }
+
+    function renderCart() {
+        const cartItems = document.getElementById('cart-items');
+        cartItems.innerHTML = cart.map(item => `
+            <div class="cart-item">
+                <img src="${item.image}" alt="${item.name}">
+                <div>
+                    <h4>${item.name}</h4>
+                    <p>$${item.price}</p>
+                    <div class="quantity-controls">
+                        <button onclick="decreaseQuantity(${item.id})">-</button>
+                        <span>${item.quantity}</span>
+                        <button onclick="increaseQuantity(${item.id})">+</button>
+                        <button onclick="removeFromCart(${item.id})">🗑️</button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        document.getElementById('total').textContent = `Total: $${total}`;
+    }
+
+    function addToCart(productId) {
+        const product = products.find(p => p.id === productId);
+        const cartItem = cart.find(item => item.id === productId);
+
+        if (cartItem) {
+            increaseQuantity(productId);
+        } else {
+            cart.push({ ...product, quantity: 1 });
+        }
+        renderCart();
+    }
+
+    function removeFromCart(productId) {
+        cart = cart.filter(item => item.id !== productId);
+        renderCart();
+    }
+
+    function increaseQuantity(productId) {
+        const item = cart.find(item => item.id === productId);
+        if (item) {
+            item.quantity++;
+            renderCart();
+        }
+    }
+
+    function decreaseQuantity(productId) {
+        const item = cart.find(item => item.id === productId);
+        if (item && item.quantity > 1) {
+            item.quantity--;
+            renderCart();
+        } else if (item && item.quantity === 1) {
+            removeFromCart(productId);
+        }
+    }
+
+    function toggleCart() {
+        document.getElementById('cart').classList.toggle('active');
+    }
+
+    renderProducts();
+</script>
+</body>
+</html>
